@@ -10,24 +10,22 @@
 #include "nvs_flash.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
-#include  <ssd1306.h>
 
-//create a character array to store the data in char format
-//data is stored as a char array with length 10.
-//This will allow it the data value to be displayed on the screen later on
+// create a character array to store the data in char format
+// data is stored as a char array with length 10.
+// This will allow it the data value to be displayed on the screen later on
 char data_rec[10];
 
 static void on_data_recv(const esp_now_recv_info_t *recv_info, const uint8_t *data, int len)
 {
-    uint8_t *mac = recv_info->src_addr; 
+    uint8_t *mac = recv_info->src_addr;
 
-    sprintf(data_rec, "%d", *data); //fprmatting the incoming data value to fit into a string
+    sprintf(data_rec, "%d", *data); // fprmatting the incoming data value to fit into a string
 
-    printf("Received from MAC %02X:%02X:%02X:%02X:%02X:%02X: %.*s\n", mac[0], mac[1], mac[2], mac[3], mac[4], mac[5], len, (char *)data); //printing out values
-
+    printf("Received from MAC %02X:%02X:%02X:%02X:%02X:%02X: %.*s\n", mac[0], mac[1], mac[2], mac[3], mac[4], mac[5], len, (char *)data); // printing out values
 }
 
-//initialize wifi capabilities so that ESP32's can communicate over network
+// initialize wifi capabilities so that ESP32's can communicate over network
 void wifi_init()
 {
     nvs_flash_init();
@@ -43,9 +41,9 @@ void wifi_init()
 
 void app_main(void)
 {
-    wifi_init(); //initialize wifi function
+    wifi_init(); // initialize wifi function
 
-    esp_now_init(); //initializing built-in esp-now functionality
+    esp_now_init(); // initializing built-in esp-now functionality
 
     // Find local MAC address
     uint8_t mac_l[6] = {0};
@@ -53,19 +51,11 @@ void app_main(void)
     printf("Local MAC address: \"0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x\" \n", mac_l[0], mac_l[1], mac_l[2], mac_l[3], mac_l[4], mac_l[5]);
 
     // ESP-NOW
-    esp_now_register_recv_cb(on_data_recv); //method to receive incoming data
+    esp_now_register_recv_cb(on_data_recv); // method to receive incoming data
 
-    //initialize display
-    init_ssd1306();
-
-     while (1)
+    while (1)
     {
-
-        clear_display(); //ensure all pixels are cleared
-        ssd1306_print_str(28, 47, data_rec, false); //print incomding information on screen
-        ssd1306_display(); //send oled data to buffer
-      
-        vTaskDelay(pdMS_TO_TICKS(500)); //delat
+        printf("hi\n");
+        vTaskDelay(pdMS_TO_TICKS(500)); // delat
     }
-
 }
